@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -43,7 +43,7 @@ public class UserController {
         return ResponseUtil.wrapResponse(userService.createUser(id, otp, secret), ResponseMessage.CREATE_USER_SUCCESS.getMessage());
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<CommonResponse<Void>> createTempUser(
             @Valid @RequestBody UserRequest newUserRequest,
             BindingResult bindingResult) throws ValidationException {
@@ -58,7 +58,7 @@ public class UserController {
         return ResponseUtil.wrapResponse(null, ResponseMessage.DELETE_USER_SUCCESS.getMessage());
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<CommonResponse<List<UserDto>>> getAll() {
         return ResponseUtil.wrapResponse(userService.getAll(), ResponseMessage.GET_ALL_USERS_SUCCESS.getMessage());
     }

@@ -11,6 +11,9 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+/**
+ * Cross-Origin Resource Sharing (CORS), allows or rejects requests that come form other source
+ */
 @Configuration
 public class CorsConfig {
     private static final String ALLOWED_ORIGINS = "http://localhost:3000";

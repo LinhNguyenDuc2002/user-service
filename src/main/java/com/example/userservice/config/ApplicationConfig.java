@@ -21,7 +21,7 @@ public class ApplicationConfig {
     private int tempUserLifespanInHour;
 
     @Value("${message.email.from}")
-    private String Emailsender;
+    private String senderEmail;
 
     @Autowired
     private MessageSource messageSource;

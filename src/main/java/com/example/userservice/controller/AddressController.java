@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/addresses")
+@RequestMapping("/address")
 public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<CommonResponse<AddressDto>> get(@PathVariable String id) throws NotFoundException, ValidationException {
         return ResponseUtil.wrapResponse(addressService.get(id), ResponseMessage.GET_ADDRESS_SUCCESS.getMessage());
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/user/{id}")
     public ResponseEntity<CommonResponse<AddressDto>> update(
             @PathVariable String id,
             @Valid @RequestBody AddressRequest addressRequest,

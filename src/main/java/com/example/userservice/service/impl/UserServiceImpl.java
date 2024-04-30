@@ -103,12 +103,12 @@ public class UserServiceImpl implements UserService {
         emailArgs.put(EmailConstant.ARG_LOGO_URI, "");
         emailArgs.put(EmailConstant.ARG_OTP_CODE, otp);
         emailArgs.put(EmailConstant.ARG_RECEIVER_NAME, userCache.getFullname());
-        emailArgs.put(EmailConstant.ARG_SUPPORT_EMAIL, applicationConfig.getEmailsender());
+        emailArgs.put(EmailConstant.ARG_SUPPORT_EMAIL, applicationConfig.getSenderEmail());
 
         EmailMessage email = EmailMessage.builder()
                 .template(EmailConstant.TEMPLATE_EMAIL_VERIFY_OTP)
                 .receiver(userCache.getEmail())
-                .sender(applicationConfig.getEmailsender())
+                .sender(applicationConfig.getSenderEmail())
                 .subject(EmailConstant.ARG_VERIFY_EMAIL_SUBJECT)
                 .args(emailArgs)
                 .locale(LocaleContextHolder.getLocale())
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         emailService.sendMessage(email);
         log.info("OTP code is sent successfully");
 
-//        userCacheManager.storeUserCache(userCache);
+        userCacheManager.storeUserCache(userCache);
     }
 
     @Override
@@ -225,7 +225,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public User convertToUser(UserCache userCache) {
-        Date join = new Date();
         return User.builder()
                 .username(userCache.getUsername())
                 .password(userCache.getPassword())
