@@ -44,14 +44,14 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * filter jwt
-     * @return
-     */
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
+//    /**
+//     * filter jwt
+//     * @return
+//     */
+//    @Bean
+//    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+//        return new JwtAuthenticationFilter();
+//    }
 
     /**
      *  Create and config  SpringTemplateEngine (implementation of ITemplateEngine in Thymeleaf)

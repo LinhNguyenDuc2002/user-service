@@ -9,6 +9,7 @@ import com.example.userservice.entity.User;
 import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.exception.ValidationException;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.security.token.TokenGenerator;
 import com.example.userservice.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -34,19 +37,22 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TokenGenerator tokenGenerator;
+
     public AuthResponse authenticate(Credentials credentials) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(credentials.getUsername().toLowerCase(), credentials.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtConfig.generateJwtToken(authentication);
-        String refreshToken = jwtConfig.generateRefreshToken(authentication);
+//        String token = jwtConfig.generateJwtToken(authentication);
+        Map<String, Object> token = tokenGenerator.createToken(authentication);
 
         log.info("Authenticating credential");
         return AuthResponse.builder()
                 .message("Authenticate successfully!")
-                .accessToken(token)
-                .refreshToken(refreshToken)
+                .accessToken(token.get("access_token").toString())
+                .refreshToken(token.get("refresh_token").toString())
                 .build();
     }
 

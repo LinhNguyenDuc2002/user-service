@@ -1,5 +1,9 @@
-package com.example.userservice.entity;
+package com.example.userservice.security.data;
 
+import com.example.userservice.entity.Role;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,19 +11,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class UserDetailsImpl implements UserDetails {
+public class AuthUser implements UserDetails {
+    @Getter
+    @Id
     private String id;
+
+    @NonNull
     private String username;
 
+    @NonNull
     private String password;
 
     private Collection<? extends GrantedAuthority> roles;
 
-    public UserDetailsImpl(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.roles = user.getRoles()
+    public AuthUser(String id, String username, String password, Collection<Role> roleList) {
+        super();
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roleList
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
@@ -58,9 +68,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getId() {
-        return id;
     }
 }

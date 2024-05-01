@@ -1,6 +1,6 @@
 package com.example.userservice.util;
 
-import com.example.userservice.entity.UserDetailsImpl;
+import com.example.userservice.security.data.AuthUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -15,7 +15,7 @@ public final class SecurityUtil {
             return null;
         }
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        AuthUser userPrincipal = (AuthUser) authentication.getPrincipal();
         return userPrincipal.getId().toString();
     }
 }
