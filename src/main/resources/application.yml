@@ -50,6 +50,14 @@ spring:
           starttls:
             enable: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: 1530299457838583
+            client-secret: 1dae2361a663def64fb0cafc287f55a5
+
 # Mail
 message:
   email:
@@ -61,13 +69,24 @@ message:
     port: 587
 
 # JWT
-jwtToken:
-  secretKey: 0123456789
-  expireTime: 1800000
+access-token:
+  private: keypair/access-token-private.key
+  public: keypair/access-token-public.key
 
-jwtRefreshToken:
-  secretKey: 9876543210
-  expireTime: 4800000
+refresh-token:
+  private: keypair/refresh-token-private.key
+  public: keypair/refresh-token-public.key
+
+oauth:
+  grant-type: shop-secure
+  client:
+    default:
+      access-token-lifespan: 1440 # in minutes
+      refresh-token-lifespan: 1440 # in minutes
+#  cookie-token:
+#    enable: false
+#    secure: false
+#    same-site: None # None/Lax/Strict
 
 # Cloudinary
 cloudinary:

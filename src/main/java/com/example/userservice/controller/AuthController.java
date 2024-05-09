@@ -31,8 +31,7 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody Credentials credentials, BindingResult bindingResult) throws ValidationException {
         HandleBindingResult.handle(bindingResult, credentials);
-
-        return ResponseEntity.ok(authService.authenticate(credentials));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/change-pwd")

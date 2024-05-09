@@ -1,5 +1,10 @@
-package com.example.userservice.entity;
+package com.example.userservice.security.data;
 
+import com.example.userservice.entity.Role;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,19 +12,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class UserDetailsImpl implements UserDetails {
+public class AuthUser implements UserDetails {
+    @Setter
+    @Getter
+    @Id
     private String id;
+
+    @NonNull
     private String username;
 
+    @NonNull
     private String password;
 
-    private Collection<? extends GrantedAuthority> roles;
+    @Setter
+    @Getter
+    private String email;
 
-    public UserDetailsImpl(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.roles = user.getRoles()
+    private Collection<? extends GrantedAuthority> authorities;
+
+    public AuthUser(String username, String password, Collection<Role> authorityList) {
+        super();
+        this.username = username;
+        this.password = password;
+        this.authorities = authorityList
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
@@ -27,7 +42,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return this.authorities;
     }
 
     @Override
@@ -58,9 +73,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getId() {
-        return id;
     }
 }

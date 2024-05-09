@@ -1,8 +1,8 @@
-package com.example.userservice.service.impl;
+package com.example.userservice.security.data;
 
 import com.example.userservice.constant.ResponseMessage;
 import com.example.userservice.entity.User;
-import com.example.userservice.entity.UserDetailsImpl;
+import com.example.userservice.security.data.AuthUser;
 import com.example.userservice.exception.CommonRuntimeException;
 import com.example.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             .build();
                 });
 
-        return new UserDetailsImpl(user);
+        AuthUser ret = new AuthUser(user.getUsername(), user.getPassword(), user.getRoles());
+        ret.setId(user.getId());
+        ret.setEmail(user.getEmail());
+
+        return ret;
     }
 }
