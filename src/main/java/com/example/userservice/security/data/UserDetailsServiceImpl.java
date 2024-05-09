@@ -1,4 +1,4 @@
-package com.example.userservice.service.impl;
+package com.example.userservice.security.data;
 
 import com.example.userservice.constant.ResponseMessage;
 import com.example.userservice.entity.User;
@@ -29,6 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             .build();
                 });
 
-        return new AuthUser(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        AuthUser ret = new AuthUser(user.getUsername(), user.getPassword(), user.getRoles());
+        ret.setId(user.getId());
+        ret.setEmail(user.getEmail());
+
+        return ret;
     }
 }

@@ -69,14 +69,6 @@ message:
     port: 587
 
 # JWT
-jwtToken:
-  secretKey: 0123456789
-  expireTime: 1800000
-
-jwtRefreshToken:
-  secretKey: 9876543210
-  expireTime: 4800000
-
 access-token:
   private: keypair/access-token-private.key
   public: keypair/access-token-public.key
@@ -84,6 +76,17 @@ access-token:
 refresh-token:
   private: keypair/refresh-token-private.key
   public: keypair/refresh-token-public.key
+
+oauth:
+  grant-type: shop-secure
+  client:
+    default:
+      access-token-lifespan: 1440 # in minutes
+      refresh-token-lifespan: 1440 # in minutes
+#  cookie-token:
+#    enable: false
+#    secure: false
+#    same-site: None # None/Lax/Strict
 
 # Cloudinary
 cloudinary:

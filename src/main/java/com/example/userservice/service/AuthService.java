@@ -7,7 +7,7 @@ import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.exception.ValidationException;
 
 public interface AuthService {
-    AuthResponse authenticate(Credentials credentials);
+//    AuthResponse authenticate(Credentials credentials);
 
     void changePwd(String id, PasswordRequest passwordRequest) throws NotFoundException, ValidationException;
 

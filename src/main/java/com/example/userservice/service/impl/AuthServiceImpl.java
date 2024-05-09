@@ -37,24 +37,21 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private TokenGenerator tokenGenerator;
-
-    public AuthResponse authenticate(Credentials credentials) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(credentials.getUsername().toLowerCase(), credentials.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        String token = jwtConfig.generateJwtToken(authentication);
-        Map<String, Object> token = tokenGenerator.createToken(authentication);
-
-        log.info("Authenticating credential");
-        return AuthResponse.builder()
-                .message("Authenticate successfully!")
-                .accessToken(token.get("access_token").toString())
-                .refreshToken(token.get("refresh_token").toString())
-                .build();
-    }
+//    public AuthResponse authenticate(Credentials credentials) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(credentials.getUsername().toLowerCase(), credentials.getPassword()));
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+////        String token = jwtConfig.generateJwtToken(authentication);
+//        Map<String, Object> token = tokenGenerator.createToken(authentication);
+//
+//        log.info("Authenticating credential");
+//        return AuthResponse.builder()
+//                .message("Authenticate successfully!")
+//                .accessToken(token.get("access_token").toString())
+////                .refreshToken(token.get("refresh_token").toString())
+//                .build();
+//    }
 
     @Override
     public void changePwd(String id, PasswordRequest passwordRequest) throws NotFoundException, ValidationException {

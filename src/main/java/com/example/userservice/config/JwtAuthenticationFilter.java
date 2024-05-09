@@ -1,5 +1,6 @@
 //package com.example.userservice.config;
 //
+//import com.example.userservice.security.token.TokenGenerator;
 //import jakarta.servlet.FilterChain;
 //import jakarta.servlet.ServletException;
 //import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@
 //
 //public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //    @Autowired
-//    private JwtConfig jwtConfig;
+//    private TokenGenerator tokenGenerator;
 //
 //    @Autowired
 //    private UserDetailsService userDetailsService;
@@ -27,18 +28,16 @@
 //        try {
 //            String jwt = getJwtFromRequest(request);
 //
-//            if (StringUtils.hasText(jwt) && jwtConfig.validateJwtToken(jwt)) {
-//                String username = jwtConfig.getUserNameFromJwtToken(jwt);
+//            if (StringUtils.hasText(jwt) && tokenGenerator.validateJwtToken(jwt)) {
+//                String username = tokenGenerator.getUserNameFromJwtToken(jwt);
 //                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 //
-//                if (userDetails != null) {
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-//                            userDetails, null, userDetails.getAuthorities());
+//                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//                        userDetails, null, userDetails.getAuthorities());
 //
-//                    // set authenticated detail info for authentication
-//                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
+//                // set authenticated detail info for authentication
+//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
 //            }
 //        } catch (Exception e) {
 //            logger.error("Can NOT set user authentication -> Message: {}", e);
@@ -51,7 +50,7 @@
 //        String authHeader = request.getHeader("Authorization");
 //
 //        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
-//            return authHeader.replace("Bearer ", "");
+//            return authHeader.substring(7);
 //        }
 //        return null;
 //    }

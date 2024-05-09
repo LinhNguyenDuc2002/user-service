@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getLoggedInUser() throws NotFoundException {
         log.info("Get info of logged in user");
-        String id = SecurityUtil.getLoggedInUserId();
+        String id = SecurityUtil.getLoggedInUserId().get();
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {

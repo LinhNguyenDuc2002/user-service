@@ -1,21 +1,40 @@
 package com.example.userservice.util;
 
-import com.example.userservice.security.data.AuthUser;
+import com.example.userservice.constant.SecurityConstant;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import java.util.Optional;
 
 public final class SecurityUtil {
     /**
+     * Get UserId current
      * @return
      */
-    public static String getLoggedInUserId() {
+    public static Optional<String> getLoggedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getPrincipal() == null) {
-            return null;
+            return Optional.empty();
         }
 
-        AuthUser userPrincipal = (AuthUser) authentication.getPrincipal();
-        return userPrincipal.getId().toString();
+        // Resolve username depend on type of principal.
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Jwt jwt) {
+            return resolveUserIdFromJwt(jwt);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<String> resolveUserIdFromJwt(Jwt jwt) {
+        Object username = jwt.getClaims().get(SecurityConstant.TOKEN_CLAIM_USER_ID);
+
+        if (username != null) {
+            return Optional.of(username.toString());
+        } else {
+            return Optional.empty();
+        }
     }
 }
