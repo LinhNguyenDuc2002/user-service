@@ -1,6 +1,8 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.RoleType;
+import com.example.userservice.constant.SecurityConstant;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.dto.request.UserRequest;
 import com.example.userservice.dto.response.CommonResponse;
@@ -12,6 +14,7 @@ import com.example.userservice.util.ResponseUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -44,12 +48,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<CommonResponse<Void>> createTempUser(
+    public ResponseEntity<CommonResponse<Object>> createTempUser(
             @Valid @RequestBody UserRequest newUserRequest,
             BindingResult bindingResult) throws ValidationException {
         HandleBindingResult.handle(bindingResult, newUserRequest);
-        userService.createTempUser(newUserRequest);
-        return ResponseUtil.wrapResponse(null, ResponseMessage.WAIT_ENTER_OTP.getMessage());
+        return ResponseUtil.wrapResponse(userService.createTempUser(newUserRequest), ResponseMessage.WAIT_ENTER_OTP.getMessage());
     }
 
     @DeleteMapping("/{id}")
@@ -59,6 +62,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Secured({SecurityConstant.ADMIN, SecurityConstant.EMPLOYEE})
     public ResponseEntity<CommonResponse<List<UserDto>>> getAll() {
         return ResponseUtil.wrapResponse(userService.getAll(), ResponseMessage.GET_ALL_USERS_SUCCESS.getMessage());
     }

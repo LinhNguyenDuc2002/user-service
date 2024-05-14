@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SecurityConstant {
+    public static final String ADMIN = "ADMIN";
+    public static final String EMPLOYEE = "EMPLOYEE";
+    public static final String CUSTOMER = "CUSTOMER";
+
 //    --- HEADER PARAM ---
     public static final String HEADER_FORWARDED_ADDRESS = "X-Forwarded-For";
     public static final String HEADER_ORIGIN = "x-origin";

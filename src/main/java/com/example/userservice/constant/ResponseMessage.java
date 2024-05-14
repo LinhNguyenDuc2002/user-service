@@ -86,7 +86,9 @@ public enum ResponseMessage {
 
     CREATE_BILL_SUCCESS("Created a bill successfully"),
 
-    PAID_SUCCESS("Paid successfully");
+    PAID_SUCCESS("Paid successfully"),
+
+    ERROR_USER_UNKNOWN("");
 
     private String message;
 }

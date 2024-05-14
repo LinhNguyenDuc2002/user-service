@@ -29,10 +29,10 @@ public final class SecurityUtil {
     }
 
     private static Optional<String> resolveUserIdFromJwt(Jwt jwt) {
-        Object username = jwt.getClaims().get(SecurityConstant.TOKEN_CLAIM_USER_ID);
+        Object userId = jwt.getClaims().get(SecurityConstant.TOKEN_CLAIM_USER_ID);
 
-        if (username != null) {
-            return Optional.of(username.toString());
+        if (userId != null) {
+            return Optional.of(userId.toString());
         } else {
             return Optional.empty();
         }

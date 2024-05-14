@@ -6,11 +6,12 @@ import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.exception.ValidationException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     UserDto getLoggedInUser() throws NotFoundException;
 
-    void createTempUser(UserRequest newUserRequest) throws ValidationException;
+    Map<String, String> createTempUser(UserRequest newUserRequest) throws ValidationException;
 
     void delete(String id) throws NotFoundException;
 

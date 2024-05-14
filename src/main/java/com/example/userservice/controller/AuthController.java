@@ -1,6 +1,7 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.SecurityConstant;
 import com.example.userservice.dto.request.Credentials;
 import com.example.userservice.dto.request.PasswordRequest;
 import com.example.userservice.dto.response.AuthResponse;
@@ -13,6 +14,7 @@ import com.example.userservice.util.ResponseUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,22 +30,20 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping
-    public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody Credentials credentials, BindingResult bindingResult) throws ValidationException {
-        HandleBindingResult.handle(bindingResult, credentials);
-        return ResponseEntity.ok().build();
-    }
+    /*
+    * /oauth2/token: return token
+     */
 
-    @PutMapping("/{id}/change-pwd")
-    public ResponseEntity<CommonResponse<Void>> changePassword(@PathVariable String id,
-                                                               @Valid @RequestBody PasswordRequest pwd,
+    @PutMapping("/change-pwd")
+    public ResponseEntity<CommonResponse<Void>> changePassword(@Valid @RequestBody PasswordRequest pwd,
                                                                BindingResult bindingResult) throws ValidationException, NotFoundException {
         HandleBindingResult.handle(bindingResult, pwd);
-        authService.changePwd(id, pwd);
+        authService.changePwd(pwd);
         return ResponseUtil.wrapResponse(null, ResponseMessage.CHANGE_PASSWORD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{id}/reset-pwd")
+    @Secured({SecurityConstant.ADMIN, SecurityConstant.EMPLOYEE})
     public ResponseEntity<CommonResponse<Void>> resetPassword(@RequestParam(name = "password") String password,
                                                               @PathVariable String id) throws ValidationException, NotFoundException {
         authService.resetPwd(id, password);

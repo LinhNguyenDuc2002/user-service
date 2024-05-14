@@ -2,25 +2,21 @@ package com.example.userservice.service.impl;
 
 import com.example.userservice.config.JwtConfig;
 import com.example.userservice.constant.ResponseMessage;
-import com.example.userservice.dto.request.Credentials;
 import com.example.userservice.dto.request.PasswordRequest;
-import com.example.userservice.dto.response.AuthResponse;
 import com.example.userservice.entity.User;
 import com.example.userservice.exception.NotFoundException;
+import com.example.userservice.exception.UnauthorizedException;
 import com.example.userservice.exception.ValidationException;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.security.token.TokenGenerator;
 import com.example.userservice.service.AuthService;
+import com.example.userservice.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,32 +33,18 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    public AuthResponse authenticate(Credentials credentials) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(credentials.getUsername().toLowerCase(), credentials.getPassword()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-////        String token = jwtConfig.generateJwtToken(authentication);
-//        Map<String, Object> token = tokenGenerator.createToken(authentication);
-//
-//        log.info("Authenticating credential");
-//        return AuthResponse.builder()
-//                .message("Authenticate successfully!")
-//                .accessToken(token.get("access_token").toString())
-////                .refreshToken(token.get("refresh_token").toString())
-//                .build();
-//    }
-
     @Override
-    public void changePwd(String id, PasswordRequest passwordRequest) throws NotFoundException, ValidationException {
-        log.info("Change password of user {}", id);
+    public void changePwd(PasswordRequest passwordRequest) throws NotFoundException, ValidationException {
+        log.info("Change password");
 
-        User user = userRepository.findById(id)
+        Optional<String> userId = SecurityUtil.getLoggedInUserId();
+        if(userId.isEmpty()) {
+            throw new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+        }
+
+        User user = userRepository.findById(userId.get())
                 .orElseThrow(() -> {
-                    log.error("User {} don't exist", id);
-                    return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
-                            .build();
+                    return new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
                 });
 
         if (!passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
@@ -77,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
 
-        log.info("Changed password of user {} successfully", id);
+        log.info("Changed password of user {} successfully", userId.get());
         userRepository.save(user);
     }
 
