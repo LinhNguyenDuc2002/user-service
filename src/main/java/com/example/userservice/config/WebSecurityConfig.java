@@ -25,6 +25,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
 @Configuration
 @EnableWebSecurity
 @Slf4j
-@EnableGlobalMethodSecurity(prePostEnabled = true) //allow use @PreAuthorize, @Secured
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) //allow use @PreAuthorize, @Secured
 public class WebSecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
@@ -101,6 +102,16 @@ public class WebSecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
+    }
+
+    /**
+     * Remove prefix "ROLE_"
+     * Therefore, when use @Secured or @PreAuthorize, don't need to use prefix "ROLE_" in front of roles
+     * @return
+     */
+    @Bean
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
     }
 
     /**
@@ -172,8 +183,9 @@ public class WebSecurityConfig {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()) //handle access denied exception
                 )
                 .authorizeHttpRequests(authorize -> authorize //config authentication rules for requests
-                        .requestMatchers("/auth/**", "/user/verify").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                        .requestMatchers( "/user/verify").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated());
 //                .authorizeRequests()

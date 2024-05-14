@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Objects;
 
 @Slf4j
-public final class PageUtil {
+public final class PaginationUtil {
     public static Pageable getPage(Integer page, Integer size) {
         if (Objects.nonNull(page) && Objects.nonNull(size)) {
             return PageRequest.of(page, size);

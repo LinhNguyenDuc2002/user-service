@@ -9,6 +9,7 @@ import com.example.userservice.dto.request.UserRequest;
 import com.example.userservice.entity.Role;
 import com.example.userservice.entity.User;
 import com.example.userservice.exception.NotFoundException;
+import com.example.userservice.exception.UnauthorizedException;
 import com.example.userservice.exception.ValidationException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.message.EmailService;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -66,14 +68,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getLoggedInUser() throws NotFoundException {
         log.info("Get info of logged in user");
-        String id = SecurityUtil.getLoggedInUserId().get();
 
-        User user = userRepository.findById(id)
+        Optional<String> userId = SecurityUtil.getLoggedInUserId();
+        if(userId.isEmpty()) {
+            throw new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+        }
+
+        User user = userRepository.findById(userId.get())
                 .orElseThrow(() -> {
-                    log.error("Logged in user don't exist");
-                    return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
-                            .build();
+                    return new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
                 });
 
         log.info("Got info of logged in user successfully");
@@ -81,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createTempUser(UserRequest newUserRequest) throws ValidationException {
+    public Map<String, String> createTempUser(UserRequest newUserRequest) throws ValidationException {
         log.info("Save registration information temporarily");
 
         if (!StringUtils.hasText(newUserRequest.getEmail())) {
@@ -96,8 +99,9 @@ public class UserServiceImpl implements UserService {
         UserCache userCache = convertToUserCache(newUserRequest);
 
         String otp = OtpUtil.generateOTP();
+        String secretKey = UUID.randomUUID().toString();
         userCache.setOtp(otp);
-        userCache.setSecretKey(UUID.randomUUID().toString());
+        userCache.setSecretKey(secretKey);
 
         Map<String, String> emailArgs = new HashMap<>();
         emailArgs.put(EmailConstant.ARG_LOGO_URI, "");
@@ -118,6 +122,10 @@ public class UserServiceImpl implements UserService {
         log.info("OTP code is sent successfully");
 
         userCacheManager.storeUserCache(userCache);
+        return Map.of(
+                "id", userCache.getId(),
+                "secret_key", secretKey
+        );
     }
 
     @Override
