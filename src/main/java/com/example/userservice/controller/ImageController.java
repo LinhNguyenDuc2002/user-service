@@ -2,6 +2,7 @@ package com.example.userservice.controller;
 
 import com.example.userservice.constant.ResponseMessage;
 import com.example.userservice.dto.response.CommonResponse;
+import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.service.ImageService;
 import com.example.userservice.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponse<String>> deleteAvatar(@PathVariable String id) throws IOException {
+    public ResponseEntity<CommonResponse<String>> deleteAvatar(@PathVariable String id) throws NotFoundException {
         imageService.deleteAvatar(id);
         return ResponseUtil.wrapResponse(null, ResponseMessage.DELETE_AVATAR_SUCCESS.getMessage());
     }
