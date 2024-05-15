@@ -88,7 +88,11 @@ public enum ResponseMessage {
 
     PAID_SUCCESS("Paid successfully"),
 
-    ERROR_USER_UNKNOWN("");
+    ERROR_USER_UNKNOWN(""),
+
+    SET_AVATAR_SUCCESS(""),
+
+    DELETE_AVATAR_SUCCESS("");
 
     private String message;
 }
