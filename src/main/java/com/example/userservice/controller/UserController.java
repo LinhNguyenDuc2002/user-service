@@ -1,7 +1,6 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.constant.ResponseMessage;
-import com.example.userservice.constant.RoleType;
 import com.example.userservice.constant.SecurityConstant;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.dto.request.UserRequest;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
