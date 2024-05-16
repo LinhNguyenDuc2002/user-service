@@ -15,10 +15,11 @@ import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.message.EmailService;
 import com.example.userservice.message.email.EmailConstant;
 import com.example.userservice.message.email.EmailMessage;
+import com.example.userservice.payload.CustomerRequest;
 import com.example.userservice.redis.model.UserCache;
 import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.service.ProductService;
+import com.example.userservice.repository.httpclient.ProductServiceClient;
 import com.example.userservice.service.UserService;
 import com.example.userservice.util.OtpUtil;
 import com.example.userservice.util.SecurityUtil;
@@ -29,7 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     private UserCacheManager userCacheManager;
 
     @Autowired
-    private ProductService iamService;
+    private ProductServiceClient productServiceClient;
 
     @Autowired
     private ApplicationConfig applicationConfig;
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 .locale(LocaleContextHolder.getLocale())
                 .build();
         log.info("Sending OTP to authenticate ...");
-        emailService.sendMessage(email);
+//        emailService.sendMessage(email);
         log.info("OTP code is sent successfully");
 
         userCacheManager.storeUserCache(userCache);
@@ -151,13 +151,22 @@ public class UserServiceImpl implements UserService {
         userCacheManager.clearUserCache(userCache.getId());
 
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByRoleName(RoleType.valueOf(userCache.getRole())));
+        RoleType roleType = RoleType.valueOf(userCache.getRole());
+        roles.add(roleRepository.findByRoleName(roleType));
 
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         userRepository.save(user);
-        iamService.createActor(user);
+
+        productServiceClient.createCustomer(
+                CustomerRequest.builder()
+                        .accountId(user.getId())
+                        .email(user.getEmail())
+                        .fullname(user.getFullname())
+                        .phone(user.getPhone())
+                        .role(RoleType.CUSTOMER.name())
+                        .build()
+        );
         return userMapper.toDto(user);
     }
 

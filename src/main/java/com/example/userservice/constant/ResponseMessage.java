@@ -14,7 +14,7 @@ public enum ResponseMessage {
 
     USER_NOT_FOUND("User doesn't exist"),
 
-    GET_ALL_USERS_SUCCESS("Got all users successfully"),
+    GET_ALL_USER_SUCCESS("Got all users successfully"),
 
     GET_USER_SUCCESS("Got a user successfully"),
 
