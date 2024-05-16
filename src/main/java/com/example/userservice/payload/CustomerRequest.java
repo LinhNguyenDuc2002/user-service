@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerRequest {
-    @JsonProperty("account")
+    @JsonProperty("account_id")
     private String accountId;
 
     @JsonProperty("fullname")

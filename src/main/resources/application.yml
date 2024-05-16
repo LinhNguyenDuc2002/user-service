@@ -99,16 +99,9 @@ tempUser:
 
 # Swagger: http://localhost:8080/api/swagger-ui/index.html
 
-#user:
-#  oauth:
-#    clientId: javadevjournal
-#    clientSecret: 1234$#@!
-#    redirectUris=http: //localhost:8080/login
-#    accessTokenValidity: 300
-#    refreshTokenValidity: 240000
-#    user:
-#      username: javadevjournal
-#      password: javadevjournal
+app:
+  services:
+    product: http://localhost:9000/api
 
 
 

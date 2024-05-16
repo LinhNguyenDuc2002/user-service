@@ -62,7 +62,7 @@ public class UserController {
     @GetMapping
     @Secured({SecurityConstant.ADMIN, SecurityConstant.EMPLOYEE})
     public ResponseEntity<CommonResponse<List<UserDto>>> getAll() {
-        return ResponseUtil.wrapResponse(userService.getAll(), ResponseMessage.GET_ALL_USERS_SUCCESS.getMessage());
+        return ResponseUtil.wrapResponse(userService.getAll(), ResponseMessage.GET_ALL_USER_SUCCESS.getMessage());
     }
 
     @GetMapping("/{id}")
