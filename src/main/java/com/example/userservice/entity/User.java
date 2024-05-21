@@ -33,6 +33,8 @@ public class User extends Auditor {
 
     private String username;
 
+    private String nickname;
+
     private String password;
 
     private String fullname;

@@ -1,7 +1,7 @@
 package com.example.userservice.cache.redis;
 
 import com.example.userservice.cache.UserCacheManager;
-import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.exception.ValidationException;
 import com.example.userservice.redis.model.UserCache;
@@ -27,7 +27,7 @@ public class UserCacheManagerImpl implements UserCacheManager {
         Optional<UserCache> check = userCacheRepository.findById(id);
         if (!check.isPresent()) {
             throw NotFoundException.builder()
-                    .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                    .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                     .build();
         }
 
@@ -35,7 +35,7 @@ public class UserCacheManagerImpl implements UserCacheManager {
         if (!userCache.getSecretKey().equals(secret) || !userCache.getOtp().equals(otp)) {
             throw ValidationException.builder()
                     .errorObject(otp)
-                    .message(ResponseMessage.INVALID_OTP.getMessage())
+                    .message(ExceptionMessage.ERROR_INVALID_OTP)
                     .build();
         }
 

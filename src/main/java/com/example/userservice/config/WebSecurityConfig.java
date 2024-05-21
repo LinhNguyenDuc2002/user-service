@@ -131,8 +131,8 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwtResourceServerCustomize)
-                        .bearerTokenResolver(tokenResolver)
+                        .jwt(jwtResourceServerCustomize) //handle JWT token
+                        .bearerTokenResolver(tokenResolver) //how to get token
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -24,6 +24,11 @@ public class UserRequest {
     @NotNull(message = "Username cannot be null")
     private String username;
 
+    @JsonProperty("nickname")
+    @Size(min = 1, message = "Nickname cannot be empty")
+    @NotNull(message = "Nickname cannot be null")
+    private String nickname;
+
     @JsonProperty("password")
     @Size(min = 6, message = "Password has a minimum length of 6 characters")
     @NotNull(message = "Password cannot be null")

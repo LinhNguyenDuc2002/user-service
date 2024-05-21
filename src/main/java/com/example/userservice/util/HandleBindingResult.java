@@ -1,5 +1,6 @@
 package com.example.userservice.util;
 
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.constant.ResponseMessage;
 import com.example.userservice.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public final class HandleBindingResult {
             }
 
             log.error("The input of fields is not properly formatted");
-            throw new ValidationException(object, ResponseMessage.INPUT_INVALID.getMessage());
+            throw new ValidationException(object, ExceptionMessage.ERROR_INPUT_INVALID);
         }
     }
 }
