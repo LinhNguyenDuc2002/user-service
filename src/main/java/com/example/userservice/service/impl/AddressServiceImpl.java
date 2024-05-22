@@ -1,5 +1,6 @@
 package com.example.userservice.service.impl;
 
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.constant.ResponseMessage;
 import com.example.userservice.dto.AddressDto;
 import com.example.userservice.dto.request.AddressRequest;
@@ -30,7 +31,7 @@ public class AddressServiceImpl implements AddressService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 
@@ -67,7 +68,7 @@ public class AddressServiceImpl implements AddressService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 

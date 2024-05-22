@@ -2,7 +2,7 @@ package com.example.userservice.service.impl;
 
 import com.example.userservice.cache.UserCacheManager;
 import com.example.userservice.config.ApplicationConfig;
-import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.constant.RoleType;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.dto.request.UserRequest;
@@ -70,13 +70,13 @@ public class UserServiceImpl implements UserService {
         log.info("Get info of logged in user");
 
         Optional<String> userId = SecurityUtil.getLoggedInUserId();
-        if(userId.isEmpty()) {
-            throw new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+        if (userId.isEmpty()) {
+            throw new UnauthorizedException(ExceptionMessage.ERROR_USER_UNKNOWN);
         }
 
         User user = userRepository.findById(userId.get())
                 .orElseThrow(() -> {
-                    return new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+                    return new UnauthorizedException(ExceptionMessage.ERROR_USER_UNKNOWN);
                 });
 
         log.info("Got info of logged in user successfully");
@@ -89,11 +89,11 @@ public class UserServiceImpl implements UserService {
 
         if (!StringUtils.hasText(newUserRequest.getEmail())) {
             log.error("Email is invalid");
-            throw new ValidationException(newUserRequest, ResponseMessage.EMAIL_INVALID.getMessage());
+            throw new ValidationException(newUserRequest, ExceptionMessage.ERROR_EMAIL_INVALID);
         }
         if (userRepository.existsByEmail(newUserRequest.getEmail())) {
             log.error("Email is already in use");
-            throw new ValidationException(newUserRequest, ResponseMessage.EMAIL_EXISTS.getMessage());
+            throw new ValidationException(newUserRequest, ExceptionMessage.ERROR_EMAIL_EXISTED);
         }
 
         UserCache userCache = convertToUserCache(newUserRequest);
@@ -136,14 +136,14 @@ public class UserServiceImpl implements UserService {
             log.error("OTP code is invalid or expired");
             throw ValidationException.builder()
                     .errorObject(otp)
-                    .message(ResponseMessage.INVALID_OTP.getMessage())
+                    .message(ExceptionMessage.ERROR_INVALID_OTP)
                     .build();
         }
 
         UserCache userCache = userCacheManager.verifyUserCache(id, otp, secret);
         if (userCache == null) {
             throw NotFoundException.builder()
-                    .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                    .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                     .build();
         }
 
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
         if (!checkUser) {
             log.error("User {} don't exist", id);
             throw NotFoundException.builder()
-                    .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                    .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                     .build();
         }
 
@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> {
                     log.error("User {} don't exist", id);
                     return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 
@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> {
                     log.error("User {} don't exist", id);
                     return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 
@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
 
             if (checkUsername) {
                 log.error("Username {} existed", userRequest.getUsername());
-                throw new ValidationException(userRequest, ResponseMessage.USERNAME_EXISTED.getMessage());
+                throw new ValidationException(userRequest, ExceptionMessage.ERROR_USERNAME_EXISTED);
             }
             user.setUsername(userRequest.getUsername());
         }
@@ -244,6 +244,7 @@ public class UserServiceImpl implements UserService {
     public User convertToUser(UserCache userCache) {
         return User.builder()
                 .username(userCache.getUsername())
+                .nickname(userCache.getNickname())
                 .password(userCache.getPassword())
                 .fullname(userCache.getFullname())
                 .email(userCache.getEmail())
@@ -255,6 +256,7 @@ public class UserServiceImpl implements UserService {
     public UserCache convertToUserCache(UserRequest newUserRequest) {
         return UserCache.builder()
                 .id(UUID.randomUUID().toString())
+                .nickname(newUserRequest.getNickname())
                 .username(newUserRequest.getUsername())
                 .password(newUserRequest.getPassword())
                 .fullname(newUserRequest.getFullname())

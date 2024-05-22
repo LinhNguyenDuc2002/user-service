@@ -23,6 +23,8 @@ public class UserCache implements Serializable {
 
     private String secretKey;
 
+    private String nickname;
+
     private String username;
 
     private String password;

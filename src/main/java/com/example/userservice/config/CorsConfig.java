@@ -22,7 +22,9 @@ public class CorsConfig {
 
     private static final String[] ALLOWED_HEADERS = {
             HttpHeaders.CONTENT_TYPE,
-            HttpHeaders.AUTHORIZATION
+            HttpHeaders.AUTHORIZATION,
+            HttpHeaders.ORIGIN,
+            "x-origin"
     };
 
     @Bean

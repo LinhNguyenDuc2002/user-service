@@ -1,7 +1,7 @@
 package com.example.userservice.service.impl;
 
 import com.example.userservice.config.JwtConfig;
-import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.dto.request.PasswordRequest;
 import com.example.userservice.entity.User;
 import com.example.userservice.exception.NotFoundException;
@@ -38,23 +38,23 @@ public class AuthServiceImpl implements AuthService {
         log.info("Change password");
 
         Optional<String> userId = SecurityUtil.getLoggedInUserId();
-        if(userId.isEmpty()) {
-            throw new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+        if (userId.isEmpty()) {
+            throw new UnauthorizedException(ExceptionMessage.ERROR_USER_UNKNOWN);
         }
 
         User user = userRepository.findById(userId.get())
                 .orElseThrow(() -> {
-                    return new UnauthorizedException(ResponseMessage.ERROR_USER_UNKNOWN.getMessage());
+                    return new UnauthorizedException(ExceptionMessage.ERROR_USER_UNKNOWN);
                 });
 
         if (!passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
             log.error("Old password and new password don't match");
-            throw new ValidationException(passwordRequest, ResponseMessage.OLD_PASSWORD_INVALID.getMessage());
+            throw new ValidationException(passwordRequest, ExceptionMessage.ERROR_OLD_PASSWORD_INVALID);
         }
 
         if (passwordRequest.getNewPassword().equals(passwordRequest.getOldPassword())) {
             log.error("Old password and new password are the same");
-            throw new ValidationException(passwordRequest, ResponseMessage.INPUT_PASSWORD_INVALID.getMessage());
+            throw new ValidationException(passwordRequest, ExceptionMessage.ERROR_INPUT_PASSWORD_INVALID);
         }
 
         user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
@@ -69,14 +69,14 @@ public class AuthServiceImpl implements AuthService {
 
         if (password.length() < 6 || password.isEmpty()) {
             log.error("New password is invalid");
-            throw new ValidationException(password, ResponseMessage.INPUT_PASSWORD_INVALID.getMessage());
+            throw new ValidationException(password, ExceptionMessage.ERROR_INPUT_PASSWORD_INVALID);
         }
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("User {} don't exist", id);
                     return NotFoundException.builder()
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 

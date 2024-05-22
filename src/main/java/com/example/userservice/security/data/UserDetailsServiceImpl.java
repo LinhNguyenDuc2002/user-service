@@ -1,8 +1,7 @@
 package com.example.userservice.security.data;
 
-import com.example.userservice.constant.ResponseMessage;
+import com.example.userservice.constant.ExceptionMessage;
 import com.example.userservice.entity.User;
-import com.example.userservice.security.data.AuthUser;
 import com.example.userservice.exception.CommonRuntimeException;
 import com.example.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> {
                     return CommonRuntimeException.builder()
                             .status(HttpStatus.NOT_FOUND)
-                            .message(ResponseMessage.USER_NOT_FOUND.getMessage())
+                            .message(ExceptionMessage.ERROR_USER_NOT_FOUND)
                             .build();
                 });
 
