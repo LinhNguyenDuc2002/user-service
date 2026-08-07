@@ -2,12 +2,7 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy pom.xml và tải thư viện trước để tận dụng CACHE cho lần build sau
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy phần code còn lại
-COPY src ./src
+COPY . .
 
 # Build ứng dụng Spring Boot
 RUN mvn clean package -DskipTests
