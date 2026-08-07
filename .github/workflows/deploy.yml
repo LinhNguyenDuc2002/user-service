@@ -1,0 +1,29 @@
+name: Build User Service
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted # Bắt buộc Server phải cài sẵn GitHub Runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TAG="latest"
+          else
+            TAG="test"
+          fi
+          docker build -t user-service:$TAG .
+
+#      - name: Reset và Khởi chạy ứng dụng mới
+#        run: |
+#          docker stop seo-tool-app || true
+#          docker rm seo-tool-app || true
+#          docker run -d -p 8080:8080 --name seo-tool-app --restart always seo-tool:latest

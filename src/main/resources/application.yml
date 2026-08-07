@@ -10,14 +10,16 @@ logging:
     org.springframework.security: trace
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: user-service
 
   # Database
   datasource:
-    url: jdbc:mysql://localhost:3306/user_service
-    username: root
-    password:
+    url: ${MYSQL_DATABASE_URL:jdbc:mysql://localhost:3306/user_service}
+    username: ${MYSQL_DATABASE_USERNAME:root}
+    password: ${MYSQL_DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari: # connection pooling library
       maximum-pool-size: 5 # maximum number of connection pooling at the same time
@@ -61,6 +63,9 @@ spring:
       topics:
         - name: create-customer
           partitions: 2
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
   # Config for JavaMailSender
   mail:
@@ -79,12 +84,12 @@ spring:
 
 message:
   email:
-    protocol: smtp
-    from:
-    username:
-    password:
-    host:
-    port: 587
+    protocol: ${SERVER_MAIL_PROTOCOL:smtp}
+    from: ${SERVER_MAIL}
+    username: ${SERVER_MAIL_USERNAME}
+    password: ${SERVER_MAIL_PASSWORD}
+    host: ${SERVER_MAIL_HOST}
+    port: ${SERVER_MAIL_PORT:587}
 
 # JWT
 jwt:
@@ -102,9 +107,9 @@ oauth:
 
 # Cloudinary
 cloudinary:
-  cloudName:
-  apiKey:
-  apiSecret:
+  cloudName: ${CLOUDINARY_CLOUD_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}
 
 tempUser:
   lifespan: 12

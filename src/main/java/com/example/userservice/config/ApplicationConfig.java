@@ -2,17 +2,17 @@ package com.example.userservice.config;
 
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
-import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.thymeleaf.templateresolver.ITemplateResolver;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 
 @Configuration
 @Getter
@@ -49,47 +49,41 @@ public class ApplicationConfig {
     /**
      * Create and config  SpringTemplateEngine (implementation of ITemplateEngine in Thymeleaf)
      * It's used to handle template Thymeleaf
+     * Create and config SpringResourceTemplateResolver (an implementation of ITemplateResolver in Thymeleaf)
+     * It's used to identify template Thymeleaf and provide configs like prefix, suffix, ... of template files, ...
      * messageSource is message source for templates
      *
      * @return
      */
     @Bean
-    public SpringTemplateEngine thymeleafTemplateEngine() {
+    public SpringTemplateEngine thymeleafTemplateEngine(ApplicationContext applicationContext) {
+        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
+        resolver.setApplicationContext(applicationContext);
+        resolver.setPrefix("classpath:/templates/");
+        resolver.setSuffix(".html");
+        resolver.setTemplateMode(TemplateMode.HTML);
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setCacheable(false);
+
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(thymeleafTemplateResolver());
-        templateEngine.setTemplateEngineMessageSource(messageSource);
+        templateEngine.setTemplateResolver(resolver);
+        templateEngine.setMessageSource(messageSource);
         return templateEngine;
     }
 
-    /**
-     * Create and config ClassLoaderTemplateResolver (an implementation of ITemplateResolver in Thymeleaf)
-     * It's used to identify template Thymeleaf and provide configs like prefix, suffix, ... of template files, ...
-     *
-     * @return
-     */
-    @Bean
-    public ITemplateResolver thymeleafTemplateResolver() {
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML");
-        templateResolver.setCharacterEncoding("UTF-8");
-        return templateResolver;
-    }
-
-    /**
-     * Swagger config
-     * http://localhost:8080/api/swagger-ui/index.html
-     *
-     * @return
-     */
-    @Bean
-    public GroupedOpenApi controllerApi() {
-        return GroupedOpenApi.builder()
-                .group("Api")
-                .packagesToScan("com.example.userservice.controller") // Specify the package to scan
-                .build();
-    }
+    // /**
+    //  * Swagger config
+    //  * http://localhost:8080/api/swagger-ui/index.html
+    //  *
+    //  * @return
+    //  */
+    // @Bean
+    // public GroupedOpenApi controllerApi() {
+    //     return GroupedOpenApi.builder()
+    //             .group("Api")
+    //             .packagesToScan("com.example.userservice.controller") // Specify the package to scan
+    //             .build();
+    // }
 
 
 }
