@@ -2,6 +2,15 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
+# Copy JAR vào container và cài vào Maven local
+COPY src/main/resources/lib/service-foundation-0.0.1-SNAPSHOT.jar /tmp/
+RUN mvn install:install-file \
+    -Dfile=/tmp/service-foundation-0.0.1-SNAPSHOT.jar \
+    -DgroupId=com.example \
+    -DartifactId=service-foundation \
+    -Dversion=0.0.1-SNAPSHOT \
+    -Dpackaging=jar
+
 COPY . .
 
 # Build ứng dụng Spring Boot
