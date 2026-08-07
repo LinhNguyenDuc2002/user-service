@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted # Bắt buộc Server phải cài sẵn GitHub Runner
+    runs-on: self-hosted # Bắt buộc Server đã cài GitHub Runner
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
