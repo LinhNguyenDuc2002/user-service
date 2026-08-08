@@ -119,7 +119,7 @@ public class UserController {
         );
     }
 
-    @PostMapping("/ìnfo")
+    @PostMapping("/info")
     public ResponseEntity<List<BasicUserInfoDto>> getUserInfo(@RequestBody List<String> ids) {
         return ResponseEntity.ok(userService.getUserInfo(ids));
     }
